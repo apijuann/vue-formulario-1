@@ -1,132 +1,62 @@
 <template>
   <form @submit.prevent="procesarFormulario">
-    <!-- Input form -->
-    <input 
-      type="text"
-      class="form-control my-2"
-      placeholder="Enter a name"
-      v-model.trim="tarea.nombre"
-      >
-      <!-- End of input form -->
-    <!-- Checkbox -->
-    <div class="form-check form-check-inline">
-      <input 
-        type="checkbox"
-        id="check-1"
-        class="form-check-input"
-        v-model="tarea.categorias"
-        value="javascript"
-        >
-      <label for="check-1" class="form-check-label">Javascript</label>
-    </div>
+    <Input :tarea="tarea" />
+  </form>
 
-    <div class="form-check form-check-inline">
-      <input 
-        type="checkbox"
-        id="check-2"
-        class="form-check-input"
-        v-model="tarea.categorias"
-        value="node js"
-        >
-      <label for="check-2" class="form-check-label">Node js</label>
-    </div>
-    <!-- End of checkbox -->
-    <!-- Radio -->
-      <div class="mt-2">
-        <div class="form-check form-check-inline">
-          <input 
-            class="form-check-input" 
-            type="radio" 
-            id="radio-1" 
-            value="urgent"
-            v-model="tarea.estado"
-            >
-          <label class="form-check-label" for="radio-1">Urgent</label>
-        </div>
-
-        <div class="form-check form-check-inline">
-          <input 
-            class="form-check-input" 
-            type="radio" 
-            id="radio-2" 
-            value="relax"
-            v-model="tarea.estado"
-            >
-          <label class="form-check-label" for="radio-2">Relax</label>
-        </div>
-      </div>
-    <!-- End of radio -->
-    <!-- Input number -->
-      <div class="mt-2">
-        <input 
-          type="number"
-          class="form-control"
-          v-model.number="tarea.numero"
-          >
-      </div>
-    <!-- End of input number -->
-    <!-- BOTON PROCESAR -->
-    <div class="mt-2">
-      <button 
-        class="btn btn-dark btn-block" 
-        type="submit"
-        :disabled="bloquear"
-      >
-      Precesar</button>
-    </div>
-    <!-- End boton procesar -->
-    </form>
-
-  <hr>
-  
-  <p>{{tarea}}</p>
+  <ListaTareas />
 </template>
 
-
-// *************************
-// ********SCRIPT***********
-// *************************
+// ************************* // ********SCRIPT*********** //
+*************************
 <script>
+import Input from '../components/Input'
+import ListaTareas from '../components/ListaTareas'
+import { mapActions } from 'vuex'
+const shortid = require('shortid')
 
 export default {
   name: 'Home',
   components: {
-    
+    Input,
+    ListaTareas,
   },
   data() {
     return {
       tarea: {
+        id: '',
         nombre: '',
         categorias: [],
         estado: '',
-        numero: 0
-      }
+        numero: 0,
+      },
     }
   },
   methods: {
+    ...mapActions(['setTareas']),
     procesarFormulario() {
-      console.log(this.tarea)
-      if (this.tarea.nombre.trim()==="") {
-        console.log('Campo vacio')
+      // console.log(this.tarea)
+      if (this.tarea.nombre.trim() === '') {
+        // console.log('Campo vacio')
         return
       }
-      console.log('Campo NO vacio')
+      // console.log('Campo NO vacio')
+
+      //  Generar id
+      this.tarea.id = shortid.generate()
+      // (this.tarea.id)
+
       // Enviar datos
+      this.setTareas(this.tarea)
 
-
-      // Limpiar
+      // Limpiar datos
       this.tarea = {
+        id: '',
         nombre: '',
         categorias: [],
         estado: '',
-        numero: 0
+        numero: 0,
       }
-    }
+    },
   },
-  computed: {
-    bloquear(){
-      return this.tarea.nombre.trim()==="" ? true : false
-    }
-  }
 }
 </script>
